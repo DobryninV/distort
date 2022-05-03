@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Pixi</title>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.3/pixi.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.2/TweenMax.min.js"></script>
+	<style>
+		* {
+			overflow: hidden;
+			padding: 0;
+			margin: 0;
+			box-sizing: border-box;
+		}
+	</style>
+
+	<script type="text/javascript">
+		document.addEventListener("DOMContentLoaded", function() {
+			let width = window.innerWidth;
+			let height = window.innerHeight;
+			let imageCount = true;
+
+			document.querySelector('body').addEventListener('click', () => {
+				const tl = new TimelineMax();
+				// tl
+				// 	.to(displacementFilter.scale, 1, {y: 300})
+				// 	.to(displacementFilter.scale, 1, {y: 0.1})
+
+				tl
+					.to(imageCount ? bgImage2 : bgImage, 1, { alpha: 1 }, 1)
+					.to(!imageCount ? bgImage2 : bgImage, 1, { alpha: 0 }, 1);
+				console.log(imageCount)
+				imageCount = !imageCount;
+			})
+
+			
+			const renderer = new PIXI.Application(width, height, {
+				backgroundColor: 0x000000,
+			});
+			document.body.appendChild(renderer.view);
+
+			const stage = new PIXI.Stage();
+			const container = new PIXI.Container();
+			
+			stage.addChild(container);
+
+			const bgImage = PIXI.Sprite.fromImage('1.jpg');
+			container.addChild(bgImage);
+
+			const bgImage2 = PIXI.Sprite.fromImage('2.jpg');
+			bgImage2.alpha = 0;
+			container.addChild(bgImage2);
+
+			// add filters
+			const disSprite = PIXI.Sprite.fromImage('map.jpg')
+			disSprite.width = 800;
+			disSprite.height = 600;
+			disSprite.top = 0;
+			disSprite.left = 0;
+			const displacementFilter = new PIXI.filters.DisplacementFilter(disSprite);
+
+			displacementFilter.scale.set(0.1)
+			stage.addChild(disSprite);
+			container.filters = [displacementFilter]
+
+			renderer.stage.addChild(stage);
+
+			function draw(){
+				renderer.render(stage);
+				window.requestAnimationFrame(draw);
+			}
+
+			draw();
+		});
+	</script>
+</head>
+<body > 
+<div id="pixi"></div>
+</body>
+</html>
